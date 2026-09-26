@@ -930,6 +930,16 @@ contract LLMConsumer {
     address constant LLM_PRECOMPILE = 0x0000000000000000000000000000000000000802;
     address constant RITUAL_WALLET  = 0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948;
 
+    /// @dev DA reference for conversation history (convoHistory tuple).
+    ///      Must be passed as a struct, NOT as nested abi.encode(...) bytes —
+    ///      the precompile decodes field 29 as (string,string,string) and
+    ///      rejects the payload otherwise (RPC -32602 invalid async payload).
+    struct StorageRef {
+        string platform;
+        string path;
+        string keyRef;
+    }
+
     event InferenceCompleted(string model, bool hasError);
 
     function depositForFees() external payable {
@@ -976,7 +986,7 @@ contract LLMConsumer {
             int256(1000),        // topP (1.0 × 1000)
             "",                  // user
             bool(false),         // piiEnabled
-            abi.encode("gcs", "convos/my-session.jsonl", "GCS_CREDS")
+            StorageRef("gcs", "convos/my-session.jsonl", "GCS_CREDS")
         );
 
         // Short-running async envelope: (bytes simmedInput, bytes actualOutput).
