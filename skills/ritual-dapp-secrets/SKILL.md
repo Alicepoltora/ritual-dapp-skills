@@ -586,7 +586,7 @@ SecretsAccessControl: 0xf9BF1BC8A3e79B9EBeD0fa2Db70D0513fecE32FD
 ### Grant Access
 
 ```typescript
-import { createWalletClient, http, defineChain, keccak256, toBytes } from 'viem';
+import { createWalletClient, createPublicClient, http, defineChain, keccak256, toBytes, hexToBytes } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import type { Address, Hex } from 'viem';
 import { encrypt } from 'eciesjs';
@@ -599,13 +599,18 @@ const ritualChain = defineChain({
 });
 const account = privateKeyToAccount(process.env.PRIVATE_KEY! as `0x${string}`);
 const walletClient = createWalletClient({ account, chain: ritualChain, transport: http() });
+const publicClient = createPublicClient({ chain: ritualChain, transport: http() });
 
 const SECRETS_AC = '0xf9BF1BC8A3e79B9EBeD0fa2Db70D0513fecE32FD' as const;
 const contractAddress = '0x1111111111111111111111111111111111111111' as Address;
+// Executor key from getServicesByCapability(0, true) -> node.publicKey
+const executorPublicKey = '0x04...' as Hex;
 
 // Encrypt secrets and compute hash
 const secretJson = JSON.stringify({ API_KEY: 'sk-my-key' });
-const encryptedBuffer = encrypt(executorPublicKey.slice(2), Buffer.from(secretJson));
+// Registry keys are 0x-hex — decode to bytes (a hex-char string encrypts to a
+// garbled key the executor can never decrypt).
+const encryptedBuffer = encrypt(hexToBytes(executorPublicKey as Hex), Buffer.from(secretJson));
 const encryptedHex = `0x${encryptedBuffer.toString('hex')}` as Hex;
 const secretsHash = keccak256(toBytes(encryptedHex));
 
