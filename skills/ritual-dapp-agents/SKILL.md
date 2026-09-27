@@ -809,7 +809,7 @@ enum SovereignWakeMode { NONE, ROLLING_FIXED_WINDOW }
 enum SovereignExecutorMode { PINNED, RESOLVE_AT_INVOCATION }
 
 contract SovereignAgentHarness {
-    address public constant SOVEREIGN_AGENT_PRECOMPILE = address(0x080C);
+    address public constant SOVEREIGN_AGENT_PRECOMPILE = address(0x000000000000000000000000000000000000080C);
     uint256 public constant MAX_EXECUTOR_SCAN = 1;
 
     ISchedulerHarness public immutable scheduler;
@@ -818,8 +818,7 @@ contract SovereignAgentHarness {
     address public immutable asyncDelivery;
 
     address public owner;
-    bool public configured;
-    SovereignWakeMode public wakeMode;
+    bool public configured;    SovereignWakeMode public wakeMode;
     SovereignExecutorMode public executorMode;
     uint256 public activeCallId;
     uint32 public activeNumCalls;
@@ -836,6 +835,34 @@ contract SovereignAgentHarness {
     SovereignRollingConfig public rollingConfig;
 
     // --- Core lifecycle ---
+
+    constructor(
+        ISchedulerHarness _scheduler,
+        IRitualWallet _ritualWallet,
+        ITEEServiceRegistry _teeRegistry,
+        address _asyncDelivery
+    ) {
+        owner = msg.sender;
+        scheduler = _scheduler;
+        ritualWallet = _ritualWallet;
+        teeRegistry = _teeRegistry;
+        asyncDelivery = _asyncDelivery;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
+
+    modifier onlyScheduler() {
+        require(msg.sender == address(scheduler), "Not scheduler");
+        _;
+    }
+
+    modifier onlyAsyncDelivery() {
+        require(msg.sender == asyncDelivery, "Not async delivery");
+        _;
+    }
 
     function configureFundAndStart(
         SovereignAgentParams calldata p,
@@ -1785,7 +1812,7 @@ Any contract can call the 0x080C precompile. You do NOT need the canonical Preco
 pragma solidity ^0.8.24;
 
 contract SovereignAgentConsumer {
-    address constant SOVEREIGN_AGENT = address(0x080C);
+    address constant SOVEREIGN_AGENT = address(0x000000000000000000000000000000000000080C);
     address constant ASYNC_DELIVERY = 0x5A16214fF555848411544b005f7Ac063742f39F6;
 
     bytes32 public lastJobId;

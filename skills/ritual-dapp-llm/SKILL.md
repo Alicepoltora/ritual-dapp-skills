@@ -928,7 +928,7 @@ pragma solidity ^0.8.20;
 
 contract LLMConsumer {
     address constant LLM_PRECOMPILE = 0x0000000000000000000000000000000000000802;
-    address constant RITUAL_WALLET  = 0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948;
+    address payable constant RITUAL_WALLET = payable(0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948);
 
     event InferenceCompleted(string model, bool hasError);
 

@@ -339,7 +339,7 @@ contract ConsumerTest is Test {
         bytes32 jobId = keccak256("test");
         bytes memory result = abi.encode(uint8(1), true, "hello", "", uint16(1), uint16(0), "");
 
-        vm.prank(address(0xdead));
+        vm.prank(address(0x000000000000000000000000000000000000dead));
         vm.expectRevert("only async delivery");
         consumer.onAgentResult(jobId, result);
 
@@ -373,10 +373,10 @@ function test_mockHTTP() public {
     );
     bytes memory mockRaw = abi.encode(bytes(""), mockOutput);
 
-    vm.mockCall(address(0x0801), "", mockRaw);
+    vm.mockCall(address(0x0000000000000000000000000000000000000801), "", mockRaw);
 
     (uint16 status, bytes memory body) = consumer.makeGET(
-        address(0xE1), "https://api.example.com/price"
+        address(0x00000000000000000000000000000000000000E1), "https://api.example.com/price"
     );
     assertEq(status, 200);
 }

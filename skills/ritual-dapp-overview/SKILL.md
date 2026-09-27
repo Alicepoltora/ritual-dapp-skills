@@ -732,7 +732,7 @@ dApps typically write "consumer contracts" that interact with precompiles. The b
 pragma solidity ^0.8.20;
 
 contract SimpleHTTPConsumer {
-    address constant HTTP_PRECOMPILE = address(0x0801);
+    address constant HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000801);
 
     event RequestSubmitted(bytes32 indexed jobId);
     event ResponseReceived(uint16 statusCode, bytes body);

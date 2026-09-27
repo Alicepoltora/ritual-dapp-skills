@@ -460,7 +460,7 @@ contract ScheduledHTTPConsumer {
 pragma solidity ^0.8.20;
 
 contract ScheduledLongRunningConsumer {
-    address constant LONG_HTTP = address(0x0805);
+    address constant LONG_HTTP = address(0x0000000000000000000000000000000000000805);
     address constant ASYNC_DELIVERY = 0x5A16214fF555848411544b005f7Ac063742f39F6;
 
     bytes public encodedRequest;

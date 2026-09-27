@@ -380,7 +380,7 @@ The marker is also substituted in:
 pragma solidity ^0.8.20;
 
 contract LongRunningHTTPConsumer {
-    address public constant LONG_RUNNING_HTTP_PRECOMPILE = address(0x0805);
+    address public constant LONG_RUNNING_HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000805);
     // AsyncDelivery proxy — msg.sender for all async callbacks
     address constant ASYNC_DELIVERY_SENDER = 0x5A16214fF555848411544b005f7Ac063742f39F6;
 
@@ -487,7 +487,9 @@ contract AIResearchConsumer is LongRunningHTTPConsumer {
     }
 
     function _processResult(bytes32 jobId, bytes memory body) internal override {
-        string memory summary = abi.decode(body, (string));
+        // body is raw HTTP response bytes (e.g. JSON), NOT an ABI-encoded
+        // string — abi.decode(body, (string)) reverts out-of-bounds.
+        string memory summary = string(body);
         // jobId comes from AsyncDelivery callback and is not derivable from taskId.
         // Persist by callback jobId and correlate taskId off-chain via events if needed.
         research[jobId].query = "";
@@ -846,7 +848,7 @@ The Scheduler contract can trigger long-running jobs on a recurring basis — e.
 pragma solidity ^0.8.20;
 
 contract ScheduledResearchConsumer {
-    address public constant LONG_RUNNING_HTTP_PRECOMPILE = address(0x0805);
+    address public constant LONG_RUNNING_HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000805);
     address public constant SCHEDULER = 0x56e776BAE2DD60664b69Bd5F865F1180ffB7D58B;
     // AsyncDelivery proxy — msg.sender for all async callbacks
     address constant ASYNC_DELIVERY_SENDER = 0x5A16214fF555848411544b005f7Ac063742f39F6;
@@ -893,7 +895,7 @@ contract ScheduledResearchConsumer {
             abi.decode(result, (uint16, string[], string[], bytes, string));
 
         if (statusCode >= 200 && statusCode < 300 && bytes(errorMessage).length == 0) {
-            latestResult = abi.decode(body, (string));
+            latestResult = string(body); // raw bytes, not ABI-encoded
             emit ScheduledJobCompleted(block.number, latestResult);
         }
     }
