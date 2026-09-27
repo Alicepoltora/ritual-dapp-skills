@@ -499,7 +499,6 @@ export function useAsyncJobEvents({ txId, enabled = true }: { txId: string; enab
     address: ASYNC_JOB_TRACKER,
     abi: asyncJobTrackerAbi,
     eventName: "JobAdded",
-    enabled: enabled && !!address,
     onLogs: (logs) => {
       for (const log of logs) {
         if (log.args.senderAddress?.toLowerCase() !== address?.toLowerCase()) continue;
@@ -520,7 +519,6 @@ export function useAsyncJobEvents({ txId, enabled = true }: { txId: string; enab
     address: ASYNC_JOB_TRACKER,
     abi: asyncJobTrackerAbi,
     eventName: "Phase1Settled",
-    enabled: enabled && !!address,
     onLogs: (logs) => {
       for (const log of logs) {
         const tx = getTransaction(txId);
@@ -541,7 +539,6 @@ export function useAsyncJobEvents({ txId, enabled = true }: { txId: string; enab
     address: ASYNC_JOB_TRACKER,
     abi: asyncJobTrackerAbi,
     eventName: "ResultDelivered",
-    enabled: enabled && !!address,
     onLogs: (logs) => {
       for (const log of logs) {
         const tx = getTransaction(txId);
@@ -583,7 +580,6 @@ export function useAsyncJobEvents({ txId, enabled = true }: { txId: string; enab
     address: ASYNC_JOB_TRACKER,
     abi: asyncJobTrackerAbi,
     eventName: "JobRemoved",
-    enabled: enabled && !!address,
     onLogs: (logs) => {
       for (const log of logs) {
         const tx = getTransaction(txId);
