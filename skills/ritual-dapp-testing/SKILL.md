@@ -49,7 +49,7 @@ pragma solidity ^0.8.24;
 import "forge-std/Test.sol";
 
 contract HTTPConsumer {
-    address constant HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000801);
+    address constant HTTP_PRECOMPILE = address(0x0801);
     event ResponseReceived(uint16 status, string body);
 
     function decodeSettlement(bytes memory rawOutput)
@@ -143,7 +143,7 @@ pragma solidity ^0.8.24;
 import "forge-std/Test.sol";
 
 contract AsyncConsumer {
-    address constant LONG_HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000805);
+    address constant LONG_HTTP_PRECOMPILE = address(0x0805);
     address public deliveryAddress;
 
     mapping(bytes32 => bool) public pendingJobs;
@@ -284,7 +284,7 @@ In unit tests, precompile addresses aren't available. Use `vm.mockCall` or etch 
 
 ```solidity
 contract MockPrecompileTest is Test {
-    address constant HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000801);
+    address constant HTTP_PRECOMPILE = address(0x0801);
 
     function test_MockHTTPResponse() public {
         // Async precompile results are wrapped in a short-running async envelope: (bytes simulatedInput, bytes actualOutput)
@@ -335,7 +335,7 @@ contract PrecompileMock {
 }
 
 contract EtchMockTest is Test {
-    address constant HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000801);
+    address constant HTTP_PRECOMPILE = address(0x0801);
 
     function setUp() public {
         PrecompileMock mock = new PrecompileMock();
@@ -373,7 +373,7 @@ contract ParameterizedMock {
 }
 
 contract ParameterizedMockTest is Test {
-    address constant HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000801);
+    address constant HTTP_PRECOMPILE = address(0x0801);
     ParameterizedMock mock;
 
     function setUp() public {
@@ -420,7 +420,7 @@ pragma solidity ^0.8.24;
 import "forge-std/Test.sol";
 
 contract ForkTest is Test {
-    address payable constant RITUAL_WALLET = payable(0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948);
+    address constant RITUAL_WALLET = 0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948;
     address constant ASYNC_JOB_TRACKER = 0xC069FFCa0389f44eCA2C626e55491b0ab045AEF5;
     address constant TEE_SERVICE_REGISTRY = 0x9644e8562cE0Fe12b4deeC4163c064A8862Bf47F;
 
@@ -457,7 +457,7 @@ contract ForkTest is Test {
     }
 
     function test_AsyncJobTrackerJobCount() public {
-        address executor = address(0x0000000000000000000000000000000000001234);
+        address executor = address(0x1234);
         (bool ok, bytes memory result) = ASYNC_JOB_TRACKER.call(
             abi.encodeWithSignature("getJobCount(address)", executor)
         );
@@ -482,7 +482,7 @@ contract DeployAndTestOnFork is Test {
 
         // Deposit fees in RitualWallet
         vm.prank(address(consumer));
-        (bool ok,) = payable(0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948).call{value: 0.1 ether}(
+        (bool ok,) = address(0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948).call{value: 0.1 ether}(
             abi.encodeWithSignature("deposit(uint256)", 200) // 200 = lock duration in blocks
         );
         assertTrue(ok);
@@ -491,7 +491,7 @@ contract DeployAndTestOnFork is Test {
     function test_SubmitHTTPRequest_OnFork() public {
         // This will create a real commitment on the forked state
         consumer.fetchData(
-            address(0x0000000000000000000000000000000000001234), // executor address from registry
+            address(0x1234), // executor address from registry
             100,
             "https://api.example.com/test"
         );
@@ -1238,8 +1238,8 @@ export async function retryAsync<T>(
 | Integration tests | `npx vitest run --config vitest.integration.config.ts` |
 | Gas snapshot | `forge snapshot` |
 | Coverage | `forge coverage` |
-| Mock precompile | `vm.mockCall(address(0x0000000000000000000000000000000000000801), "", responseBytes)` |
-| Etch precompile | `vm.etch(address(0x0000000000000000000000000000000000000801), mockContract.code)` |
+| Mock precompile | `vm.mockCall(address(0x0801), "", responseBytes)` |
+| Etch precompile | `vm.etch(address(0x0801), mockContract.code)` |
 | AsyncJobTracker | `0xC069FFCa0389f44eCA2C626e55491b0ab045AEF5` |
 | TEEServiceRegistry | `0x9644e8562cE0Fe12b4deeC4163c064A8862Bf47F` |
 | RitualWallet | `0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948` |

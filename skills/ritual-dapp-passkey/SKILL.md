@@ -306,7 +306,7 @@ The production SECP256R1 precompile uses **ABI-encoded** input, NOT raw 160-byte
 // Input: abi.encode(bytes pubkey, bytes message, bytes signature)
 // Output: abi.encode(uint256 isValid) — 1 = valid, 0 = invalid
 
-address constant SECP256R1_PRECOMPILE = address(0x0000000000000000000000000000000000000100);
+address constant SECP256R1_PRECOMPILE = address(0x100);
 
 function verifyP256(
     bytes memory pubkey,     // 33 bytes (compressed) or 65 bytes (0x04 || x || y)
@@ -521,7 +521,7 @@ The SECP256R1 precompile is **gas-only** — no RitualWallet deposit required. I
 pragma solidity ^0.8.20;
 
 contract PasskeyAccessControl {
-    address constant SECP256R1 = address(0x0000000000000000000000000000000000000100);
+    address constant SECP256R1 = address(0x100);
 
     struct P256Key {
         bytes32 x;
@@ -565,7 +565,7 @@ contract PasskeyAccessControl {
 pragma solidity ^0.8.20;
 
 contract HybridMultisig {
-    address constant SECP256R1 = address(0x0000000000000000000000000000000000000100);
+    address constant SECP256R1 = address(0x100);
 
     enum KeyType { ECDSA, P256 }
 
@@ -639,7 +639,7 @@ pragma solidity ^0.8.20;
 import "forge-std/Test.sol";
 
 contract PasskeyPrecompileTest is Test {
-    address constant SECP256R1 = address(0x0000000000000000000000000000000000000100);
+    address constant SECP256R1 = address(0x100);
 
     function test_validSignature() public {
         // Test vector from daimo-eth/p256-verifier (Wycheproof suite)
@@ -1003,7 +1003,7 @@ When a user loses all devices in their passkey sync ecosystem, they lose access.
 pragma solidity ^0.8.20;
 
 contract PasskeyWithRecovery {
-    address constant SECP256R1 = address(0x0000000000000000000000000000000000000100);
+    address constant SECP256R1 = address(0x100);
 
     struct Account {
         bytes32 passkeyX;

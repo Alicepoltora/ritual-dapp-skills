@@ -523,20 +523,20 @@ pragma solidity ^0.8.20;
 
 library RitualAddresses {
     // Precompiles (async)
-    address constant HTTP_PRECOMPILE       = address(0x0000000000000000000000000000000000000801);
-    address constant LLM_PRECOMPILE        = address(0x0000000000000000000000000000000000000802);
-    address constant LONG_HTTP_PRECOMPILE  = address(0x0000000000000000000000000000000000000805);
-    address constant ZK_PRECOMPILE         = address(0x0000000000000000000000000000000000000806);
-    address constant IMAGE_PRECOMPILE      = address(0x0000000000000000000000000000000000000818);
-    address constant AUDIO_PRECOMPILE      = address(0x0000000000000000000000000000000000000819);
-    address constant VIDEO_PRECOMPILE      = address(0x000000000000000000000000000000000000081A);
+    address constant HTTP_PRECOMPILE       = address(0x0801);
+    address constant LLM_PRECOMPILE        = address(0x0802);
+    address constant LONG_HTTP_PRECOMPILE  = address(0x0805);
+    address constant ZK_PRECOMPILE         = address(0x0806);
+    address constant IMAGE_PRECOMPILE      = address(0x0818);
+    address constant AUDIO_PRECOMPILE      = address(0x0819);
+    address constant VIDEO_PRECOMPILE      = address(0x081A);
 
     // Precompiles (native)
-    address constant ONNX_PRECOMPILE       = address(0x0000000000000000000000000000000000000800);
-    address constant JQ_PRECOMPILE         = address(0x0000000000000000000000000000000000000803);
-    address constant ED25519_PRECOMPILE    = address(0x0000000000000000000000000000000000000009);
-    address constant SECP256R1_PRECOMPILE  = address(0x0000000000000000000000000000000000000100);
-    address constant NITRO_PRECOMPILE      = address(0x0000000000000000000000000000000000000104);
+    address constant ONNX_PRECOMPILE       = address(0x0800);
+    address constant JQ_PRECOMPILE         = address(0x0803);
+    address constant ED25519_PRECOMPILE    = address(0x0009);
+    address constant SECP256R1_PRECOMPILE  = address(0x0100);
+    address constant NITRO_PRECOMPILE      = address(0x0104);
 
     // System contracts
     address constant RITUAL_WALLET         = 0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948;

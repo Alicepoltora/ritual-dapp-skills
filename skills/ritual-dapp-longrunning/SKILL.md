@@ -380,7 +380,7 @@ The marker is also substituted in:
 pragma solidity ^0.8.20;
 
 contract LongRunningHTTPConsumer {
-    address public constant LONG_RUNNING_HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000805);
+    address public constant LONG_RUNNING_HTTP_PRECOMPILE = address(0x0805);
     // AsyncDelivery proxy — msg.sender for all async callbacks
     address constant ASYNC_DELIVERY_SENDER = 0x5A16214fF555848411544b005f7Ac063742f39F6;
 
@@ -848,7 +848,7 @@ The Scheduler contract can trigger long-running jobs on a recurring basis — e.
 pragma solidity ^0.8.20;
 
 contract ScheduledResearchConsumer {
-    address public constant LONG_RUNNING_HTTP_PRECOMPILE = address(0x0000000000000000000000000000000000000805);
+    address public constant LONG_RUNNING_HTTP_PRECOMPILE = address(0x0805);
     address public constant SCHEDULER = 0x56e776BAE2DD60664b69Bd5F865F1180ffB7D58B;
     // AsyncDelivery proxy — msg.sender for all async callbacks
     address constant ASYNC_DELIVERY_SENDER = 0x5A16214fF555848411544b005f7Ac063742f39F6;

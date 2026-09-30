@@ -452,7 +452,7 @@ Output is wrapped: `(bytes tensorEncoded, uint8 outputArithmetic, uint8 outputSc
 // Gas:    2,000
 
 bytes memory input = abi.encode(pubkey, message, signature);  // all three are type bytes
-(bool ok, bytes memory result) = address(0x0000000000000000000000000000000000000009).staticcall(input);
+(bool ok, bytes memory result) = address(0x0009).staticcall(input);
 if (!ok || result.length == 0) revert("ed25519 failed");
 bool isValid = abi.decode(result, (uint256)) == 1;
 ```
@@ -469,7 +469,7 @@ All three fields are ABI type `bytes` (dynamic). `pubkey` is 32 bytes, `signatur
 // Gas:    3,450
 
 bytes memory input = abi.encode(pubkey, message, signature);  // all three are type bytes
-(bool ok, bytes memory result) = address(0x0000000000000000000000000000000000000100).staticcall(input);
+(bool ok, bytes memory result) = address(0x0100).staticcall(input);
 if (!ok || result.length == 0) revert("secp256r1 failed");
 bool isValid = abi.decode(result, (uint256)) == 1;
 ```
