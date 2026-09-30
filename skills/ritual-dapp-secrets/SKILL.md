@@ -1013,8 +1013,9 @@ contract SecretConsumer {
         require(success, "Precompile call failed");
 
         // Precompile output is the (bytes,bytes) envelope — decode it, then
-        // the 5-field HTTPCallResponse. There is no bytes->bytes32 cast in
-        // Solidity (bytes32(result) does not compile).
+        // the 5-field HTTPCallResponse. bytes32(result) compiles only with an
+        // unsafe-typecast warning AND takes the envelope's first 32 bytes
+        // (the offset word), not a job id — always decode instead.
         (, bytes memory actualOutput) = abi.decode(result, (bytes, bytes));
         (uint16 statusCode, , , , string memory errorMessage) =
             abi.decode(actualOutput, (uint16, string[], string[], bytes, string));
@@ -1180,7 +1181,8 @@ contract PrivateOutputConsumer {
         require(success, "Precompile call failed");
 
         // Same envelope rule as above: decode (bytes,bytes) first.
-        // NOTE: bytes32(x) on bytes memory does not compile, and the delivery
+        // NOTE: bytes32(x) on bytes memory compiles with a truncation warning
+        // but yields the offset word, not an id; and the delivery
         // jobId is the origin tx hash (not derivable here). This local id is
         // for the submitter's own bookkeeping only — correlate it off-chain
         // with the tx hash via the PrivateRequestSubmitted event.
