@@ -394,27 +394,30 @@ contract WebAuthnVerifier {
         uint256 pubKeyY;
     }
 
-    mapping(bytes32 => StoredCredential) public credentials; // credentialId → key
-    mapping(bytes32 => address) public credentialOwner; // credentialId → registrant
+    // Keyed by keccak256(rawId): raw WebAuthn credential IDs are variable
+    // length (often 32-64+ bytes) — a bytes32 parameter truncates/collides them.
+    mapping(bytes32 => StoredCredential) public credentials; // keccak(id) → key
+    mapping(bytes32 => address) public credentialOwner; // keccak(id) → registrant
 
-    function registerCredential(bytes32 credentialId, uint256 x, uint256 y) external {
+    function registerCredential(bytes calldata credentialId, uint256 x, uint256 y) external {
+        bytes32 idHash = keccak256(credentialId);
         // Creation-only + ownership: without this anyone can overwrite any
         // credentialId with their own key and then pass verifyAssertion as
         // the victim (the mapping is keyed by attacker-chosen id).
         require(
-            credentialOwner[credentialId] == address(0) || credentialOwner[credentialId] == msg.sender,
+            credentialOwner[idHash] == address(0) || credentialOwner[idHash] == msg.sender,
             "credential taken"
         );
-        credentialOwner[credentialId] = msg.sender;
-        credentials[credentialId] = StoredCredential(x, y);
+        credentialOwner[idHash] = msg.sender;
+        credentials[idHash] = StoredCredential(x, y);
     }
 
     function verifyAssertion(
-        bytes32 credentialId,
+        bytes calldata credentialId,
         bytes32 challenge,
         WebAuthn.WebAuthnAuth calldata auth
     ) external view returns (bool) {
-        StoredCredential memory cred = credentials[credentialId];
+        StoredCredential memory cred = credentials[keccak256(credentialId)];
         return WebAuthn.verify(
             abi.encodePacked(challenge), // expected challenge bytes
             true,                        // requireUserVerification
