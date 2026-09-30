@@ -588,7 +588,17 @@ contract HybridMultisig {
 
     constructor(Signer[] memory _signers, uint256 _threshold) {
         require(_threshold > 0 && _threshold <= _signers.length, "Bad threshold");
-        for (uint256 i = 0; i < _signers.length; i++) signers.push(_signers[i]);
+        // Malformed keys make a permanently dead signer slot (precompile
+        // returns empty -> validCount can never reach threshold). Gate shapes
+        // up front: 20 bytes for ECDSA address, 64 bytes x||y for P-256.
+        for (uint256 i = 0; i < _signers.length; i++) {
+            if (_signers[i].keyType == KeyType.ECDSA) {
+                require(_signers[i].key.length == 20, "Bad ECDSA key length");
+            } else {
+                require(_signers[i].key.length == 64, "Bad P256 key length");
+            }
+            signers.push(_signers[i]);
+        }
         threshold = _threshold;
     }
 
