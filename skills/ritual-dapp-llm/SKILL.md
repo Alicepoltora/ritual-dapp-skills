@@ -949,6 +949,9 @@ contract LLMConsumer {
         require(ok, "Deposit failed");
     }
 
+    // NOTE: the 30-field calldata encode below needs `via_ir = true` in
+    // foundry.toml (legacy codegen: "Stack too deep"). Same class as the
+    // X402 13-field consumer — see ritual-dapp-deploy config.
     function requestInference(
         address executor,
         string calldata messagesJson,
@@ -999,8 +1002,10 @@ contract LLMConsumer {
 
         bytes memory modelMeta;
         string memory errorMsg;
-        (hasError, completionData, modelMeta, errorMsg, ) =
-            abi.decode(actualOutput, (bool, bytes, bytes, string, (string, string, string)));
+        StorageRef memory updatedHistory;
+        // Tuple components cannot be inlined in abi.decode — use the struct.
+        (hasError, completionData, modelMeta, errorMsg, updatedHistory) =
+            abi.decode(actualOutput, (bool, bytes, bytes, string, StorageRef));
 
         emit InferenceCompleted(model, hasError);
     }
