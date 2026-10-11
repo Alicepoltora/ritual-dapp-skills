@@ -1853,16 +1853,12 @@ const SOVEREIGN_AGENT_ABI = parseAbiParameters([
 // Encrypt API keys with executor's public key.
 // LLM_PROVIDER is mandatory — the executor rejects the call with
 // "LLM_PROVIDER not found in secrets" if the key is missing or empty.
-import { hexToBytes } from 'viem';
-
 const secretsJson = JSON.stringify({
   LLM_PROVIDER: 'anthropic',
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_KEY,
 });
-// Registry keys are 0x-hex strings — decode to bytes first. Passing the
-// string (or .slice(2) chars) makes eciesjs encrypt to a garbled key and the
-// executor can never decrypt (silent Phase-1 stall, sender locked).
-const encryptedSecrets = encrypt(hexToBytes(executorPublicKey as `0x${string}`), Buffer.from(secretsJson));
+// eciesjs accepts the 0x-hex registry key directly (hex-decoded internally).
+const encryptedSecrets = encrypt(executorPublicKey, Buffer.from(secretsJson));
 
 const deliverySelector = toFunctionSelector('onSovereignAgentResult(bytes32,bytes)');
 
@@ -2099,11 +2095,8 @@ The `dkms_encrypted:` prefix tells the executor: "this content is ECIES-encrypte
 
 ```typescript
 // Encrypt a system prompt to the agent's DA public key
-import { hexToBytes } from 'viem';
-
 const systemPromptContent = Buffer.from('You are a DeFi portfolio agent...');
-// agentDAPublicKey is 0x-hex (65-byte uncompressed key) — decode first.
-const encrypted = encrypt(hexToBytes(agentDAPublicKey as `0x${string}`), systemPromptContent);
+const encrypted = encrypt(agentDAPublicKey, systemPromptContent);
 // Upload `encrypted` to HF, then reference with dkms_encrypted: prefix:
 const systemPrompt: StorageRef = ['hf', 'my-org/workspace/system.encrypted.md', 'dkms_encrypted:HF_TOKEN'];
 ```
@@ -2124,7 +2117,7 @@ const secretsJson = JSON.stringify({
   ANTHROPIC_API_KEY: 'sk-ant-...',
   PRIVATE_PROMPT: 'Analyze my DeFi positions and suggest optimizations for maximum yield',
 });
-const encryptedSecrets = encrypt(hexToBytes(executorPublicKey as `0x${string}`), Buffer.from(secretsJson));
+const encryptedSecrets = encrypt(executorPublicKey, Buffer.from(secretsJson));
 
 // The on-chain prompt is just the placeholder — visible to everyone but meaningless
 const prompt = 'PRIVATE_PROMPT';
@@ -2328,7 +2321,7 @@ const secretsJson = JSON.stringify({
   HF_TOKEN: process.env.HF_TOKEN!,
 });
 const encryptedSecrets = [
-  `0x${encrypt(hexToBytes(executorPubKey), Buffer.from(secretsJson)).toString('hex')}` as `0x${string}`, // hexToBytes: import { hexToBytes } from 'viem'
+  `0x${encrypt(executorPubKey, Buffer.from(secretsJson)).toString('hex')}` as `0x${string}`,
 ];
 
 // Use encryptedSecrets in your Persistent Agent or Sovereign Agent encoding
