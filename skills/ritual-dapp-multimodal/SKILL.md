@@ -433,13 +433,12 @@ const secretsJson = JSON.stringify({
   }),
 });
 
-import { hexToBytes } from 'viem';
-
 // From Executor Discovery below: services[0] key as 0x-hex
+// (eciesjs accepts the hex key directly).
 const executorPublicKey = '0x04...' as `0x${string}`;
 
 const encryptedSecrets = `0x${encrypt(
-  hexToBytes(executorPublicKey as `0x${string}`),
+  executorPublicKey,
   Buffer.from(secretsJson),
 ).toString('hex')}` as `0x${string}`;
 ```
