@@ -121,10 +121,9 @@ const x402Payload = JSON.stringify({
   BILLING_TOKEN: process.env.BILLING_TOKEN,
 });
 
-import { hexToBytes } from 'viem';
-
-// 2. Encrypt to executor's pubkey (node.publicKey from getServicesByCapability)
-const encrypted = encrypt(hexToBytes(executorPublicKey as `0x${string}`), Buffer.from(x402Payload));
+// 2. Encrypt to executor's pubkey (node.publicKey from getServicesByCapability;
+//    eciesjs accepts the 0x-hex key directly)
+const encrypted = encrypt(executorPublicKey, Buffer.from(x402Payload));
 const encryptedHex = `0x${Buffer.from(encrypted).toString('hex')}`;
 
 // 3. Sign the encrypted blob
